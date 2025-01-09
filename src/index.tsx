@@ -5,6 +5,7 @@ import RootLayout from './components/layout/RootLayout';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import StartPage from './pages/StartPage';
+import PlayPage from './pages/PlayPage';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -15,8 +16,12 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           {
-            path: '/start',
+            path: 'start',
             element: <StartPage />,
+          },
+          {
+            path: 'play',
+            element: <PlayPage />,
           },
         ],
       },
@@ -26,8 +31,4 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(
-  <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>
-  </React.StrictMode>
-);
+root.render(<RouterProvider router={router}></RouterProvider>);

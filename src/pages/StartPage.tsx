@@ -7,16 +7,16 @@ type Menu = {
 };
 const menus: Menu[] = [
   {
-    label: 'start',
-    value: '/play',
+    label: 'play',
+    value: '/tetris/play',
   },
   {
     label: 'option',
-    value: '/option',
+    value: '/tetris/option',
   },
   {
     label: 'exit',
-    value: '/exit',
+    value: '/tetris/exit',
   },
 ];
 export default function StartPage() {
