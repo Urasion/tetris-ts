@@ -7,7 +7,6 @@ import { timerAtom } from '../store/atom';
 export default function useTimer() {
   const [timerCount, setTimerCount] = useAtom<number>(timerAtom);
   const { tetromino, moveTetrominoBottom } = useTetromino();
-  console.log(tetromino);
   const timer = useRef<NodeJS.Timer>();
   const runTimer = () => {
     timer.current = setTimeout(function run() {

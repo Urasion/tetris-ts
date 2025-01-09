@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { BoardType } from '../../../constant/types';
-import useTimer from '../../../hook/useTimer';
 import useTetromino from '../../../hook/useTetromino';
 
 type BoardProps = {
@@ -41,7 +40,11 @@ export default function Board({ board }: BoardProps) {
             <div
               className={`w-[45px] h-full  border ${
                 checkIsRange(colIndex, rowIndex)
-                  ? 'bg-rose-300'
+                  ? tetromino.shape[colIndex - tetromino.position.y][
+                      rowIndex - tetromino.position.x
+                    ] === 1
+                    ? 'bg-green-300'
+                    : 'bg-blue-300'
                   : row === 1
                   ? 'bg-violet-300'
                   : 'bg-blue-300'

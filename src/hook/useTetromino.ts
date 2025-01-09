@@ -24,55 +24,19 @@ export default function useTetromino() {
       rowIndex < tetromino.position.x + tetromino.shape[0].length
     ) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   };
 
-  const moveTetrominoLeft = () => {
-    {
-      console.log(tetromino.position.x);
-      setTetromino((prev) => ({
-        ...prev,
-        position: { x: prev.position.x - 1, y: prev.position.y },
-      }));
-    }
-  };
-  const turnTetrominoLeft = () => {
-    setTetromino(
-      produce(tetromino, (draft) => {
-        for (let i = 0; i < tetromino.shape[0].length; i++) {
-          for (let j = 0; j < tetromino.shape[0].length; j++) {
-            draft.shape[tetromino.shape[0].length - 1 - j][i] =
-              tetromino.shape[i][j];
-          }
-        }
-      })
-    );
-  };
-  const moveTetrominoRight = () => {
-    if (tetromino.position.x < 9) {
-      setTetromino((prev) => ({
-        ...prev,
-        position: { x: prev.position.x + 1, y: prev.position.y },
-      }));
-    }
-  };
+  const moveTetrominoLeft = () => {};
+  const turnTetrominoLeft = () => {};
+  const moveTetrominoRight = () => {};
   const moveTetrominoBottom = () => {
     setTetromino((prev) => ({
       ...prev,
       position: { x: prev.position.x, y: prev.position.y + 1 },
     }));
-  };
-
-  const checkTetrominoException = (board: BoardType) => {
-    console.log(
-      tetromino.shape.some((col, colIndex) => {
-        col.some((row, rowIndex) => {
-          const checkLeft =
-            tetromino.position.x <= 0 && col[rowIndex - tetromino.position.x];
-        });
-      })
-    );
   };
 
   const checkTetrominoLand = (board: BoardType) => {};
@@ -81,7 +45,6 @@ export default function useTetromino() {
     tetromino,
     initTetromino,
     checkTetrominoLand,
-    checkTetrominoException,
     checkTetris,
     generateTetromino,
     checkIsRange,
