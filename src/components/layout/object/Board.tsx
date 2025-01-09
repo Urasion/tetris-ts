@@ -1,16 +1,13 @@
 import { useEffect } from 'react';
 import { BoardType } from '../../../constant/types';
-import useTimer from '../../../hook/useTimer';
 import useTetromino from '../../../hook/useTetromino';
 
 type BoardProps = {
   board: BoardType;
 };
 export default function Board({ board }: BoardProps) {
-  const { timerCount } = useTimer();
   const {
-    shape,
-    position,
+    tetromino,
     checkIsRange,
     moveTetrominoLeft,
     moveTetrominoRight,
@@ -43,11 +40,13 @@ export default function Board({ board }: BoardProps) {
             <div
               className={`w-[45px] h-full  border ${
                 checkIsRange(colIndex, rowIndex)
-                  ? row === 1
-                    ? 'bg-violet-300'
+                  ? tetromino.shape[colIndex - tetromino.position.y][
+                      rowIndex - tetromino.position.x
+                    ] === 1
+                    ? 'bg-green-300'
                     : 'bg-blue-300'
-                  : shape[colIndex - position.y][rowIndex - position.x] === 1
-                  ? 'bg-green-300'
+                  : row === 1
+                  ? 'bg-violet-300'
                   : 'bg-blue-300'
               }`}
               onClick={() => {

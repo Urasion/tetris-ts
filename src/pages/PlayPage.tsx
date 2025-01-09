@@ -15,19 +15,8 @@ export default function PlayPage() {
     useState<Array<number[]>>(initTetrisBoard);
   const { timerCount, runTimer, stopTimer } = useTimer();
   useEffect(() => {
-    runTimer(tetrisBoard);
-  }, []);
-
-  function turnRight() {
-    let temp = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-
-    return temp;
-  }
+    runTimer();
+  }, [tetrisBoard]);
 
   return (
     <div className="w-full h-[911px] flex">
@@ -35,7 +24,6 @@ export default function PlayPage() {
       <button
         onClick={() => {
           stopTimer();
-          console.log(turnRight());
         }}
       >
         asdasd
