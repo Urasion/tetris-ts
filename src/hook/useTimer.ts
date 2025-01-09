@@ -8,11 +8,13 @@ export default function useTimer() {
   const [timerCount, setTimerCount] = useAtom<number>(timerAtom);
   const { tetromino, moveTetrominoBottom } = useTetromino();
   const timer = useRef<NodeJS.Timer>();
+  useEffect(() => {
+    console.log(11);
+  }, [timerCount]);
   const runTimer = () => {
-    timer.current = setTimeout(function run() {
+    timer.current = setInterval(() => {
+      setTimerCount((prev) => prev + 1);
       moveTetrominoBottom();
-      console.log(tetromino.position);
-      setTimeout(run, 1000);
     }, 1000);
   };
   const resetTimer = () => {
@@ -20,7 +22,7 @@ export default function useTimer() {
     runTimer();
   };
   const stopTimer = () => {
-    clearTimeout(timer.current);
+    clearInterval(timer.current);
   };
 
   return { timerCount, runTimer, resetTimer, stopTimer };

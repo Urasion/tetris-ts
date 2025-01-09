@@ -10,7 +10,6 @@ export default function PlayPage() {
   const [tetrisBoard, setTetrisBoard] =
     useState<Array<number[]>>(initTetrisBoard);
   const { timerCount, runTimer, stopTimer, resetTimer } = useTimer();
-  const { tetromino } = useTetromino();
 
   useEffect(() => {
     runTimer();
