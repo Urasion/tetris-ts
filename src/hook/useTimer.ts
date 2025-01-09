@@ -1,28 +1,27 @@
-import { BoardType, Position } from './../constant/types';
-import { useEffect, useRef, useState } from 'react';
-import useUser from './useUser';
+import { BoardType } from './../constant/types';
+import { useEffect, useRef } from 'react';
 import useTetromino from './useTetromino';
 import { useAtom } from 'jotai';
 import { timerAtom } from '../store/atom';
 
 export default function useTimer() {
   const [timerCount, setTimerCount] = useAtom<number>(timerAtom);
-  const { moveTetrominoBottom, checkTetrominoLand } = useTetromino();
+  const { tetromino, moveTetrominoBottom } = useTetromino();
+  console.log(tetromino);
   const timer = useRef<NodeJS.Timer>();
-  const runTimer = (board: BoardType) => {
-    timer.current = setInterval(() => {
-      setTimerCount((prev) => prev + 1);
+  const runTimer = () => {
+    timer.current = setTimeout(function run() {
       moveTetrominoBottom();
-      if (checkTetrominoLand(board)) {
-      } else {
-      }
+      console.log(tetromino.position);
+      setTimeout(run, 1000);
     }, 1000);
   };
   const resetTimer = () => {
     setTimerCount(0);
+    runTimer();
   };
   const stopTimer = () => {
-    clearInterval(timer.current);
+    clearTimeout(timer.current);
   };
 
   return { timerCount, runTimer, resetTimer, stopTimer };

@@ -12,5 +12,5 @@ export const timerAtom = atom<number>(0);
 
 export const tetrominoAtom = atom<TetromioState>({
   position: initPosition,
-  shape: tetrominos[0],
+  shape: tetrominos[3],
 });
