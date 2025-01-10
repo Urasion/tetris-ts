@@ -13,6 +13,7 @@ export default function useTetromino() {
     const randomTetromino = Math.floor(Math.random() * 7);
     console.log(randomTetromino);
     setTetromino((prev) => ({
+      ...prev,
       position: initPosition,
       shape: tetrominos[randomTetromino],
     }));
@@ -24,6 +25,18 @@ export default function useTetromino() {
       colIndex < tetromino.position.y + tetromino.shape[0].length &&
       rowIndex >= tetromino.position.x &&
       rowIndex < tetromino.position.x + tetromino.shape[0].length
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const checkIsDropRange = (colIndex: number, rowIndex: number) => {
+    if (
+      colIndex >= tetromino.landPostion.y &&
+      colIndex < tetromino.landPostion.y + tetromino.shape[0].length &&
+      rowIndex >= tetromino.landPostion.x &&
+      rowIndex < tetromino.landPostion.x + tetromino.shape[0].length
     ) {
       return true;
     } else {
@@ -66,10 +79,49 @@ export default function useTetromino() {
       position: { x: prev.position.x, y: prev.position.y + 1 },
     }));
   };
+  const setDropPostion = () => {
+    setTetromino((prev) => ({
+      ...prev,
+      landPostion: getDropTetrominoPostion({
+        x: prev.position.x,
+        y: prev.position.y,
+      }),
+    }));
+  };
+  const dropTetrominoBottom = () => {
+    for (let i = 0; i < board.length; i++) {
+      const position: Position = {
+        x: tetromino.position.x,
+        y: tetromino.position.y + i,
+      };
+      if (checkTetrominoLand(position)) {
+        setTetromino((prev) => ({ ...prev, position: position }));
+        return;
+      }
+    }
+  };
+  const getDropTetrominoPostion = (currentPosition: Position) => {
+    for (let i = 0; i < board.length; i++) {
+      const position: Position = {
+        x: currentPosition.x,
+        y: currentPosition.y + i,
+      };
+      if (checkTetrominoLand(position)) {
+        return position;
+      }
+    }
+    return { x: 0, y: 0 };
+  };
   const checkPositionIsBorderLeft = () => {
     return tetromino.shape.every((col, colIndex) =>
       col.every((row, rowIndex) => {
-        if (row === 1 && tetromino.position.x + rowIndex === 0) {
+        if (
+          row === 1 &&
+          (tetromino.position.x + rowIndex === 0 ||
+            board[tetromino.position.y + colIndex][
+              tetromino.position.x + rowIndex - 1
+            ] === 1)
+        ) {
           return false;
         }
         return true;
@@ -80,8 +132,11 @@ export default function useTetromino() {
     return tetromino.shape.every((col, colIndex) =>
       col.every((row, rowIndex) => {
         if (
-          row === 1 &&
-          tetromino.position.x + rowIndex === board[0].length - 1
+          (row === 1 &&
+            tetromino.position.x + rowIndex === board[0].length - 1) ||
+          board[tetromino.position.y + colIndex][
+            tetromino.position.x + rowIndex - 1
+          ] === 1
         ) {
           return false;
         }
@@ -103,17 +158,15 @@ export default function useTetromino() {
     checkTetris(newBoard);
     setBoard(newBoard);
   };
-  const checkTetrominoLand = () => {
+  const checkTetrominoLand = (position: Position) => {
     return tetromino.shape.some((col, colIndex) =>
       col.some((row, rowIndex) => {
-        if (row === 1 && tetromino.position.y + colIndex === board.length - 1) {
+        if (row === 1 && position.y + colIndex === board.length - 1) {
           return true;
         } else if (
-          tetromino.position.y + colIndex < board.length - 2 &&
+          position.y + colIndex < board.length - 2 &&
           row === 1 &&
-          board[tetromino.position.y + colIndex + 1][
-            tetromino.position.x + rowIndex
-          ] === 1
+          board[position.y + colIndex + 1][position.x + rowIndex] === 1
         ) {
           return true;
         }
@@ -130,7 +183,6 @@ export default function useTetromino() {
         return col;
       }
     });
-    console.log(index);
     index.map((value, valueIndex) => {
       board.splice(value - valueIndex, 1);
     });
@@ -138,15 +190,32 @@ export default function useTetromino() {
       board.unshift(Array(board[0].length).fill(0));
     });
   };
+  function checkGameOver(board: BoardType) {
+    for (let i = 0; i < board[0].length; i++) {
+      let isGameOver = true;
+      if (board[4][i] === 0) {
+        isGameOver = false;
+        setTetromino((prev) => ({ ...prev, position: { x: 0, y: 0 } }));
+      }
+      if (isGameOver) {
+        return isGameOver;
+      }
+    }
+    return false;
+  }
   return {
     tetromino,
     checkTetrominoLand,
+    setDropPostion,
     checkTetris,
+    checkGameOver,
     generateTetromino,
     checkIsRange,
+    checkIsDropRange,
     moveTetrominoLeft,
     moveTetrominoRight,
     moveTetrominoBottom,
+    dropTetrominoBottom,
     turnTetromino,
     renderBoard,
   };

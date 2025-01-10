@@ -13,4 +13,5 @@ export const boardAtom = atom<BoardType>(initTetrisBoard);
 export const tetrominoAtom = atom<TetromioState>({
   position: initPosition,
   shape: tetrominos[0],
+  landPostion: initPosition,
 });

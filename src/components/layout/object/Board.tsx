@@ -1,18 +1,21 @@
 import { useEffect } from 'react';
-import { BoardType } from '../../../constant/types';
 import useTetromino from '../../../hook/useTetromino';
 import { useAtomValue } from 'jotai';
 import { boardAtom } from '../../../store/atom';
+import TetrisNode from './TetrisNode';
 
-type BoardProps = {};
-export default function Board({}: BoardProps) {
+type BoardProps = { isGameOver: boolean };
+export default function Board({ isGameOver }: BoardProps) {
   const board = useAtomValue(boardAtom);
   const {
     tetromino,
     checkIsRange,
+    checkIsDropRange,
     moveTetrominoLeft,
     moveTetrominoRight,
     moveTetrominoBottom,
+    dropTetrominoBottom,
+
     turnTetromino,
   } = useTetromino();
   useEffect(() => {
@@ -31,6 +34,7 @@ export default function Board({}: BoardProps) {
           turnTetromino();
           break;
         case ' ':
+          dropTetrominoBottom();
           break;
       }
     };
@@ -40,26 +44,34 @@ export default function Board({}: BoardProps) {
     };
   }, [tetromino]);
   return (
-    <div className="w-[450px] h-[900px] flex flex-col bg-rose-300 p-4">
-      {board.map((col, colIndex) => (
-        <div className="w-full h-[45px] flex bg-violet-300">
-          {col.map((row, rowIndex) => (
-            <div
-              className={`w-[45px] h-full  border ${
-                checkIsRange(colIndex, rowIndex) && row === 0
-                  ? tetromino.shape[colIndex - tetromino.position.y][
+    <div className="w-[450px] h-[900px] flex flex-col p-4">
+      {board.map(
+        (col, colIndex) =>
+          colIndex > 3 && (
+            <div className="w-full h-[45px] flex ">
+              {col.map((row, rowIndex) => (
+                <TetrisNode
+                  isGameOver={isGameOver}
+                  isDropTeromino={
+                    checkIsDropRange(colIndex, rowIndex) &&
+                    tetromino.shape[colIndex - tetromino.landPostion.y][
+                      rowIndex - tetromino.landPostion.x
+                    ] === 1
+                  }
+                  isTeromino={checkIsRange(colIndex, rowIndex) && row === 0}
+                  isTerominoNodeEmpty={
+                    checkIsRange(colIndex, rowIndex) &&
+                    row === 0 &&
+                    tetromino.shape[colIndex - tetromino.position.y][
                       rowIndex - tetromino.position.x
                     ] === 1
-                    ? 'bg-green-300'
-                    : 'bg-blue-300'
-                  : row === 1
-                  ? 'bg-violet-300'
-                  : 'bg-blue-300'
-              }`}
-            ></div>
-          ))}
-        </div>
-      ))}
+                  }
+                  isBoardNodeEmpty={row === 1}
+                />
+              ))}
+            </div>
+          )
+      )}
     </div>
   );
 }

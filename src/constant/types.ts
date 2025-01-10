@@ -15,4 +15,5 @@ export type Tetromino = Array<number[]>;
 export type TetromioState = {
   position: Position;
   shape: Tetromino;
+  landPostion: Position;
 };

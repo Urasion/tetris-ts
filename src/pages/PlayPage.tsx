@@ -7,7 +7,8 @@ import useTimer from '../hook/useTimer';
 import useTetromino from '../hook/useTetromino';
 
 export default function PlayPage() {
-  const { timerCount, runTimer, stopTimer, resetTimer } = useTimer();
+  const { timerCount, runTimer, stopTimer, reRunTimer, isGameOver } =
+    useTimer();
 
   useEffect(() => {
     runTimer();
@@ -15,22 +16,25 @@ export default function PlayPage() {
 
   return (
     <div className="w-full h-[911px] flex">
-      <Board />
-      <button
-        onClick={() => {
-          stopTimer();
-        }}
-      >
-        멈추기
-      </button>
-      <button
-        onClick={() => {
-          resetTimer();
-        }}
-      >
-        초기화
-      </button>
-      <span>{timerCount}</span>
+      <Board isGameOver={isGameOver} />
+
+      <div className="flex justify-center">
+        <span className="text-2xl font-bold">{timerCount}</span>
+        <button
+          onClick={() => {
+            stopTimer();
+          }}
+        >
+          멈추기
+        </button>
+        <button
+          onClick={() => {
+            reRunTimer();
+          }}
+        >
+          초기화
+        </button>
+      </div>
     </div>
   );
 }
