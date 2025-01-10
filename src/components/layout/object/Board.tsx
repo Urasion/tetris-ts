@@ -1,17 +1,19 @@
 import { useEffect } from 'react';
 import { BoardType } from '../../../constant/types';
 import useTetromino from '../../../hook/useTetromino';
+import { useAtomValue } from 'jotai';
+import { boardAtom } from '../../../store/atom';
 
-type BoardProps = {
-  board: BoardType;
-};
-export default function Board({ board }: BoardProps) {
+type BoardProps = {};
+export default function Board({}: BoardProps) {
+  const board = useAtomValue(boardAtom);
   const {
     tetromino,
     checkIsRange,
     moveTetrominoLeft,
     moveTetrominoRight,
-    turnTetrominoLeft,
+    moveTetrominoBottom,
+    turnTetromino,
   } = useTetromino();
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -22,8 +24,13 @@ export default function Board({ board }: BoardProps) {
         case 'ArrowRight':
           moveTetrominoRight();
           break;
+        case 'ArrowDown':
+          moveTetrominoBottom();
+          break;
+        case 'ArrowUp':
+          turnTetromino();
+          break;
         case ' ':
-          turnTetrominoLeft();
           break;
       }
     };
@@ -31,7 +38,7 @@ export default function Board({ board }: BoardProps) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [tetromino]);
   return (
     <div className="w-[450px] h-[900px] flex flex-col bg-rose-300 p-4">
       {board.map((col, colIndex) => (
@@ -39,7 +46,7 @@ export default function Board({ board }: BoardProps) {
           {col.map((row, rowIndex) => (
             <div
               className={`w-[45px] h-full  border ${
-                checkIsRange(colIndex, rowIndex)
+                checkIsRange(colIndex, rowIndex) && row === 0
                   ? tetromino.shape[colIndex - tetromino.position.y][
                       rowIndex - tetromino.position.x
                     ] === 1

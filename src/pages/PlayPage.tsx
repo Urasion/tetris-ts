@@ -7,8 +7,6 @@ import useTimer from '../hook/useTimer';
 import useTetromino from '../hook/useTetromino';
 
 export default function PlayPage() {
-  const [tetrisBoard, setTetrisBoard] =
-    useState<Array<number[]>>(initTetrisBoard);
   const { timerCount, runTimer, stopTimer, resetTimer } = useTimer();
 
   useEffect(() => {
@@ -17,7 +15,7 @@ export default function PlayPage() {
 
   return (
     <div className="w-full h-[911px] flex">
-      <Board board={tetrisBoard} />
+      <Board />
       <button
         onClick={() => {
           stopTimer();

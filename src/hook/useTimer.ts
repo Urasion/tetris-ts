@@ -6,11 +6,20 @@ import { timerAtom } from '../store/atom';
 
 export default function useTimer() {
   const [timerCount, setTimerCount] = useAtom<number>(timerAtom);
-  const { tetromino, moveTetrominoBottom } = useTetromino();
+  const {
+    tetromino,
+    moveTetrominoBottom,
+    checkTetrominoLand,
+    generateTetromino,
+    renderBoard,
+  } = useTetromino();
   const timer = useRef<NodeJS.Timer>();
   useEffect(() => {
-    console.log(11);
-  }, [timerCount]);
+    if (checkTetrominoLand()) {
+      renderBoard();
+      generateTetromino();
+    }
+  }, [timerCount, tetromino]);
   const runTimer = () => {
     timer.current = setInterval(() => {
       setTimerCount((prev) => prev + 1);

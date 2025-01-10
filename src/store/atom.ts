@@ -1,7 +1,7 @@
-import { TetromioState } from './../constant/types';
+import { BoardType, TetromioState } from './../constant/types';
 import { atom } from 'jotai';
 import { UserType } from '../constant/types';
-import { initPosition, tetrominos } from '../constant/tetris';
+import { initPosition, initTetrisBoard, tetrominos } from '../constant/tetris';
 
 export const userAtom = atom<UserType>({
   name: 'jjw',
@@ -9,8 +9,8 @@ export const userAtom = atom<UserType>({
 });
 
 export const timerAtom = atom<number>(0);
-
+export const boardAtom = atom<BoardType>(initTetrisBoard);
 export const tetrominoAtom = atom<TetromioState>({
   position: initPosition,
-  shape: tetrominos[5],
+  shape: tetrominos[0],
 });
