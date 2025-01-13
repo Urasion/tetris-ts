@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useTetromino from '../../../hook/useTetromino';
 import { useAtomValue } from 'jotai';
 import { boardAtom } from '../../../store/atom';
 import TetrisNode from './TetrisNode';
+import { GameSetting } from '../../../constant/types';
 
-type BoardProps = { isGameOver: boolean };
-export default function Board({ isGameOver }: BoardProps) {
+export default function Board({ gameSetting }: { gameSetting: GameSetting }) {
   const board = useAtomValue(boardAtom);
   const {
     tetromino,
@@ -38,20 +38,28 @@ export default function Board({ isGameOver }: BoardProps) {
           break;
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
+    if (gameSetting.state === 'play') {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [tetromino]);
+  }, [tetromino, gameSetting.state]);
   return (
-    <div className="w-[450px] h-[900px] flex flex-col p-4">
+    <div
+      className="h-5/6 flex flex-col p-4 bg-[#9EAD86] border-black border-4 space-y-1"
+      style={{ aspectRatio: 1 / 2 }}
+    >
       {board.map(
         (col, colIndex) =>
           colIndex > 3 && (
-            <div className="w-full h-[45px] flex ">
+            <div
+              className="flex w-full space-x-1 "
+              style={{ aspectRatio: 11 / 1 }}
+            >
               {col.map((row, rowIndex) => (
                 <TetrisNode
-                  isGameOver={isGameOver}
                   isDropTeromino={
                     checkIsDropRange(colIndex, rowIndex) &&
                     tetromino.shape[colIndex - tetromino.landPostion.y][

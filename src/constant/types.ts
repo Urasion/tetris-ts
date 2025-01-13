@@ -16,4 +16,12 @@ export type TetromioState = {
   position: Position;
   shape: Tetromino;
   landPostion: Position;
+  nextShape: Tetromino;
+};
+
+export type GameSetting = {
+  time: number;
+  score: number;
+  cleanlines: number;
+  state: 'ready' | 'stop' | 'gameOver' | 'play';
 };

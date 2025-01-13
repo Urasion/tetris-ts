@@ -1,14 +1,13 @@
-import { BoardType } from './../constant/types';
+import { GameSetting } from './../constant/types';
 import { useEffect, useRef, useState } from 'react';
 import useTetromino from './useTetromino';
-import { useAtom, useAtomValue } from 'jotai';
-import { boardAtom, timerAtom } from '../store/atom';
+import { useAtom } from 'jotai';
+import { boardAtom, gameSettingAtom } from '../store/atom';
+import { initTetrisBoard } from '../constant/tetris';
 
 export default function useTimer() {
-  const [timerCount, setTimerCount] = useAtom<number>(timerAtom);
-  const [board] = useAtom(boardAtom);
-  const [isStop, setIsStop] = useState<boolean>(true);
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [gameSetting, setGameSetting] = useAtom<GameSetting>(gameSettingAtom);
+  const [board, setBoard] = useAtom(boardAtom);
   const {
     tetromino,
     moveTetrominoBottom,
@@ -22,31 +21,47 @@ export default function useTimer() {
   useEffect(() => {
     setDropPostion();
     if (checkTetrominoLand(tetromino.position)) {
-      renderBoard();
-      if (checkGameOver(board)) {
-        setIsGameOver(true);
-        stopTimer();
+      if (checkGameOver(renderBoard())) {
+        setBoard(initTetrisBoard);
+        stopTimer('gameOver');
       } else {
         generateTetromino();
       }
     }
-  }, [tetromino, timerCount]);
+  }, [tetromino.position, tetromino.shape, gameSetting.state]);
   const runTimer = () => {
-    setIsStop(false);
+    setGameSetting((prev) => ({ ...prev, state: 'play' }));
     timer.current = setInterval(() => {
-      setTimerCount((prev) => prev + 1);
+      setGameSetting((prev) => ({ ...prev, time: prev.time + 1 }));
+      moveTetrominoBottom();
+    }, 1000);
+  };
+
+  const startTimer = () => {
+    setGameSetting((prev) => ({ ...prev, state: 'play', time: 0 }));
+    console.log('start');
+    generateTetromino();
+    generateTetromino();
+    timer.current = setInterval(() => {
+      setGameSetting((prev) => ({ ...prev, time: prev.time + 1 }));
       moveTetrominoBottom();
     }, 1000);
   };
   const reRunTimer = () => {
-    if (isStop) {
+    if (gameSetting.state === 'stop') {
       runTimer();
+    } else if (gameSetting.state === 'gameOver') {
+      startTimer();
     }
   };
-  const stopTimer = () => {
-    setIsStop(true);
+  const stopTimer = (state: string) => {
+    if (gameSetting.state === 'play' && state === 'stop') {
+      setGameSetting((prev) => ({ ...prev, state: 'stop' }));
+    } else if (gameSetting.state === 'play' && state === 'gameOver') {
+      setGameSetting((prev) => ({ ...prev, state: 'gameOver' }));
+    }
     clearInterval(timer.current);
   };
 
-  return { timerCount, runTimer, reRunTimer, stopTimer, isGameOver };
+  return { gameSetting, runTimer, reRunTimer, stopTimer, startTimer };
 }

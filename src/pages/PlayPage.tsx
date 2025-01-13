@@ -5,35 +5,47 @@ import { produce } from 'immer';
 import Board from '../components/layout/object/Board';
 import useTimer from '../hook/useTimer';
 import useTetromino from '../hook/useTetromino';
+import NextTetris from '../components/layout/object/NextTetris';
+import Timer from '../components/layout/object/Timer';
+import Button from '../components/layout/object/Button';
 
 export default function PlayPage() {
-  const { timerCount, runTimer, stopTimer, reRunTimer, isGameOver } =
+  const { gameSetting, runTimer, stopTimer, reRunTimer, startTimer } =
     useTimer();
 
+  const { tetromino } = useTetromino();
+
   useEffect(() => {
-    runTimer();
+    startTimer();
   }, []);
 
   return (
-    <div className="w-full h-[911px] flex">
-      <Board isGameOver={isGameOver} />
+    <div className="w-full h-full  flex justify-center items-center bg-[#9EAD86]">
+      <Board gameSetting={gameSetting} />
 
-      <div className="flex justify-center">
-        <span className="text-2xl font-bold">{timerCount}</span>
-        <button
+      <div
+        className=" h-full flex flex-col justify-around  items-center "
+        style={{ aspectRatio: 1 / 3 }}
+      >
+        <Timer time={gameSetting.time} />
+        <NextTetris />
+        <Button
+          className="bg-rose-500"
           onClick={() => {
-            stopTimer();
+            stopTimer('stop');
           }}
         >
           멈추기
-        </button>
-        <button
+        </Button>
+
+        <Button
+          className="bg-yellow-500"
           onClick={() => {
             reRunTimer();
           }}
         >
-          초기화
-        </button>
+          재시작
+        </Button>
       </div>
     </div>
   );

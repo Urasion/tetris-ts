@@ -11,11 +11,11 @@ export default function useTetromino() {
 
   const generateTetromino = () => {
     const randomTetromino = Math.floor(Math.random() * 7);
-    console.log(randomTetromino);
     setTetromino((prev) => ({
       ...prev,
       position: initPosition,
-      shape: tetrominos[randomTetromino],
+      shape: prev.nextShape,
+      nextShape: tetrominos[randomTetromino],
     }));
   };
 
@@ -62,7 +62,9 @@ export default function useTetromino() {
         newShape[col][row] = tetromino.shape[length - row][col];
       }
     }
-    setTetromino((prev) => ({ ...prev, shape: newShape }));
+    if (checkPostionIsTurn(newShape)) {
+      setTetromino((prev) => ({ ...prev, shape: newShape }));
+    }
   };
 
   const moveTetrominoRight = () => {
@@ -82,10 +84,7 @@ export default function useTetromino() {
   const setDropPostion = () => {
     setTetromino((prev) => ({
       ...prev,
-      landPostion: getDropTetrominoPostion({
-        x: prev.position.x,
-        y: prev.position.y,
-      }),
+      landPostion: getDropTetrominoPostion(),
     }));
   };
   const dropTetrominoBottom = () => {
@@ -100,11 +99,11 @@ export default function useTetromino() {
       }
     }
   };
-  const getDropTetrominoPostion = (currentPosition: Position) => {
+  const getDropTetrominoPostion = () => {
     for (let i = 0; i < board.length; i++) {
       const position: Position = {
-        x: currentPosition.x,
-        y: currentPosition.y + i,
+        x: tetromino.position.x,
+        y: tetromino.position.y + i,
       };
       if (checkTetrominoLand(position)) {
         return position;
@@ -117,7 +116,7 @@ export default function useTetromino() {
       col.every((row, rowIndex) => {
         if (
           row === 1 &&
-          (tetromino.position.x + rowIndex === 0 ||
+          (tetromino.position.x + rowIndex <= 0 ||
             board[tetromino.position.y + colIndex][
               tetromino.position.x + rowIndex - 1
             ] === 1)
@@ -132,11 +131,29 @@ export default function useTetromino() {
     return tetromino.shape.every((col, colIndex) =>
       col.every((row, rowIndex) => {
         if (
-          (row === 1 &&
-            tetromino.position.x + rowIndex === board[0].length - 1) ||
-          board[tetromino.position.y + colIndex][
-            tetromino.position.x + rowIndex - 1
-          ] === 1
+          row === 1 &&
+          (tetromino.position.x + rowIndex >= board[0].length - 1 ||
+            board[tetromino.position.y + colIndex][
+              tetromino.position.x + rowIndex + 1
+            ] === 1)
+        ) {
+          return false;
+        }
+        return true;
+      })
+    );
+  };
+
+  const checkPostionIsTurn = (turnShape: Tetromino) => {
+    return turnShape.every((col, colIndex) =>
+      col.every((row, rowIndex) => {
+        if (
+          (row == 1 &&
+            (tetromino.position.x + rowIndex >= board[0].length ||
+              board[tetromino.position.y + colIndex][
+                tetromino.position.x + rowIndex
+              ] === 1)) ||
+          tetromino.position.x + rowIndex < 0
         ) {
           return false;
         }
@@ -157,17 +174,18 @@ export default function useTetromino() {
     );
     checkTetris(newBoard);
     setBoard(newBoard);
+    return newBoard;
   };
   const checkTetrominoLand = (position: Position) => {
     return tetromino.shape.some((col, colIndex) =>
       col.some((row, rowIndex) => {
-        if (row === 1 && position.y + colIndex === board.length - 1) {
-          return true;
-        } else if (
-          position.y + colIndex < board.length - 2 &&
+        if (
+          position.y + colIndex < board.length - 1 &&
           row === 1 &&
           board[position.y + colIndex + 1][position.x + rowIndex] === 1
         ) {
+          return true;
+        } else if (row === 1 && position.y + colIndex === board.length - 1) {
           return true;
         }
         return false;
@@ -191,17 +209,16 @@ export default function useTetromino() {
     });
   };
   function checkGameOver(board: BoardType) {
-    for (let i = 0; i < board[0].length; i++) {
-      let isGameOver = true;
-      if (board[4][i] === 0) {
-        isGameOver = false;
-        setTetromino((prev) => ({ ...prev, position: { x: 0, y: 0 } }));
+    const isGameOver = board[4].some((row) => {
+      if (row === 1) {
+        return true;
       }
-      if (isGameOver) {
-        return isGameOver;
-      }
+      return false;
+    });
+    if (!isGameOver) {
+      setTetromino((prev) => ({ ...prev, position: { x: 0, y: 0 } }));
     }
-    return false;
+    return isGameOver;
   }
   return {
     tetromino,
