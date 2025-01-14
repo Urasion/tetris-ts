@@ -1,4 +1,4 @@
-import useTetromino from '../../../hook/useTetromino';
+import useTetromino from '../../hook/useTetromino';
 import TetrisNode from './TetrisNode';
 
 export default function NextTetris() {

@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import { gameSettingAtom } from '../../../store/atom';
+import { gameSettingAtom } from '../../store/atom';
 
 type Props = {
   isDropTeromino: boolean;

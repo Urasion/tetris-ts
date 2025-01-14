@@ -1,34 +1,30 @@
 import { useEffect, useState } from 'react';
 
-import Board from '../components/layout/object/Board';
+import Board from '../components/object/Board';
 import useTimer from '../hook/useTimer';
 import useTetromino from '../hook/useTetromino';
-import NextTetris from '../components/layout/object/NextTetris';
-import Timer from '../components/layout/object/Timer';
-import Button from '../components/layout/object/Button';
-import Score from '../components/layout/object/Score';
-import Level from '../components/layout/object/Level';
+import NextTetris from '../components/object/NextTetris';
+import Timer from '../components/object/Timer';
+import Button from '../components/object/Button';
+import Score from '../components/object/Score';
+import Level from '../components/object/Level';
 
 export default function PlayPage() {
-  const { gameSetting, runTimer, stopTimer, reRunTimer, startTimer } =
-    useTimer();
-
-  const { tetromino } = useTetromino();
-
+  const { gameSetting, stopTimer, reRunTimer, startTimer } = useTimer();
   useEffect(() => {
-    stopTimer('gameOver');
     startTimer();
+    return () => {
+      stopTimer('gameOver');
+    };
   }, [gameSetting.level]);
-
+  console.log(11);
   return (
     <div className="w-full h-full  flex justify-center items-center bg-[#9EAD86]">
       <Board gameSetting={gameSetting} />
-
       <div
         className=" h-full flex flex-col justify-around  items-center "
         style={{ aspectRatio: 1 / 3 }}
       >
-        <Timer time={gameSetting.time} />
         <Score score={gameSetting.score} />
         <Level level={gameSetting.level} />
         <NextTetris />
@@ -36,9 +32,10 @@ export default function PlayPage() {
           <Button
             className="bg-red-500"
             onClick={(e) => {
-              e.currentTarget.blur();
-
-              stopTimer('stop');
+              if (gameSetting.state !== 'gameOver') {
+                e.currentTarget.blur();
+                stopTimer('stop');
+              }
             }}
           >
             멈추기

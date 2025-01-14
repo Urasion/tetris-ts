@@ -3,22 +3,22 @@ import { BoardType, Position, Tetromino } from '../constant/types';
 import { initPosition, tetrominos } from '../constant/tetris';
 import { useAtom, useSetAtom } from 'jotai';
 import { boardAtom, gameSettingAtom, tetrominoAtom } from '../store/atom';
-import { produce } from 'immer';
 
 export default function useTetromino() {
   const [tetromino, setTetromino] = useAtom(tetrominoAtom);
   const [board, setBoard] = useAtom(boardAtom);
   const setGameSetting = useSetAtom(gameSettingAtom);
   const generateTetromino = () => {
+    console.log('check generate !!');
     const randomTetromino = Math.floor(Math.random() * 7);
     setTetromino((prev) => ({
       ...prev,
       position: initPosition,
       shape: prev.nextShape,
       nextShape: tetrominos[randomTetromino],
+      landPostion: getDropTetrominoPostion(initPosition, prev.nextShape),
     }));
   };
-
   const checkIsRange = (colIndex: number, rowIndex: number) => {
     if (
       colIndex >= tetromino.position.y &&
@@ -49,6 +49,13 @@ export default function useTetromino() {
       setTetromino((prev) => ({
         ...prev,
         position: { x: prev.position.x - 1, y: prev.position.y },
+        landPostion: getDropTetrominoPostion(
+          {
+            x: prev.position.x - 1,
+            y: prev.position.y,
+          },
+          prev.shape
+        ),
       }));
     }
   };
@@ -63,7 +70,11 @@ export default function useTetromino() {
       }
     }
     if (checkPostionIsTurn(newShape)) {
-      setTetromino((prev) => ({ ...prev, shape: newShape }));
+      setTetromino((prev) => ({
+        ...prev,
+        shape: newShape,
+        landPostion: getDropTetrominoPostion(prev.position, newShape),
+      }));
     }
   };
 
@@ -72,6 +83,13 @@ export default function useTetromino() {
       setTetromino((prev) => ({
         ...prev,
         position: { x: prev.position.x + 1, y: prev.position.y },
+        landPostion: getDropTetrominoPostion(
+          {
+            x: prev.position.x + 1,
+            y: prev.position.y,
+          },
+          prev.shape
+        ),
       }));
     }
   };
@@ -81,32 +99,27 @@ export default function useTetromino() {
       position: { x: prev.position.x, y: prev.position.y + 1 },
     }));
   };
-  const setDropPostion = () => {
-    setTetromino((prev) => ({
-      ...prev,
-      landPostion: getDropTetrominoPostion(),
-    }));
-  };
+
   const dropTetrominoBottom = () => {
     for (let i = 0; i < board.length; i++) {
       const position: Position = {
         x: tetromino.position.x,
         y: tetromino.position.y + i,
       };
-      if (checkTetrominoLand(position)) {
+      if (checkTetrominoLand(position, tetromino.shape)) {
         setTetromino((prev) => ({ ...prev, position: position }));
         return;
       }
     }
   };
-  const getDropTetrominoPostion = () => {
+  const getDropTetrominoPostion = (position: Position, shape: Tetromino) => {
     for (let i = 0; i < board.length; i++) {
-      const position: Position = {
-        x: tetromino.position.x,
-        y: tetromino.position.y + i,
+      const Landposition: Position = {
+        x: position.x,
+        y: position.y + i,
       };
-      if (checkTetrominoLand(position)) {
-        return position;
+      if (checkTetrominoLand(Landposition, shape)) {
+        return Landposition;
       }
     }
     return { x: 0, y: 0 };
@@ -176,8 +189,8 @@ export default function useTetromino() {
     setBoard(newBoard);
     return newBoard;
   };
-  const checkTetrominoLand = (position: Position) => {
-    return tetromino.shape.some((col, colIndex) =>
+  const checkTetrominoLand = (position: Position, shape: Tetromino) => {
+    return shape.some((col, colIndex) =>
       col.some((row, rowIndex) => {
         if (
           position.y + colIndex < board.length - 1 &&
@@ -213,22 +226,19 @@ export default function useTetromino() {
       cleanlines: prev.cleanlines + index.length,
     }));
   };
-  function checkGameOver(board: BoardType) {
+  function checkGameOver() {
     const isGameOver = board[4].some((row) => {
       if (row === 1) {
         return true;
       }
       return false;
     });
-    if (!isGameOver) {
-      setTetromino((prev) => ({ ...prev, position: { x: 0, y: 0 } }));
-    }
     return isGameOver;
   }
   return {
     tetromino,
+    board,
     checkTetrominoLand,
-    setDropPostion,
     checkTetris,
     checkGameOver,
     generateTetromino,

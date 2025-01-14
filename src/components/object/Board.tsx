@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react';
-import useTetromino from '../../../hook/useTetromino';
+import useTetromino from '../../hook/useTetromino';
 import { useAtomValue } from 'jotai';
-import { boardAtom } from '../../../store/atom';
+import { boardAtom } from '../../store/atom';
 import TetrisNode from './TetrisNode';
-import { GameSetting } from '../../../constant/types';
+import { GameSetting } from '../../constant/types';
 
 export default function Board({ gameSetting }: { gameSetting: GameSetting }) {
-  const board = useAtomValue(boardAtom);
   const {
     tetromino,
+    board,
     checkIsRange,
     checkIsDropRange,
     moveTetrominoLeft,
     moveTetrominoRight,
     moveTetrominoBottom,
     dropTetrominoBottom,
-
     turnTetromino,
   } = useTetromino();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -41,11 +41,10 @@ export default function Board({ gameSetting }: { gameSetting: GameSetting }) {
     if (gameSetting.state === 'play') {
       window.addEventListener('keydown', handleKeyDown);
     }
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [tetromino, gameSetting.state]);
+  }, [tetromino.position, tetromino.shape, gameSetting.state]);
   return (
     <div
       className="h-full flex flex-col bg-[#9EAD86]"

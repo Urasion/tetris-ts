@@ -22,6 +22,7 @@ const menus: Menu[] = [
 export default function StartPage() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const navigate = useNavigate();
+  console.log(11);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {

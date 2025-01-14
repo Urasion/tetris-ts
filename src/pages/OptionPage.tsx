@@ -21,6 +21,7 @@ export default function OptionPage() {
       }
     };
     window.addEventListener('keydown', handleKeyDown);
+    console.log('asdasd');
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
@@ -32,7 +33,7 @@ export default function OptionPage() {
     }
   };
   const handleOnLevelUp = () => {
-    if (gameSetting.level < 5) {
+    if (gameSetting.level < 9) {
       setGameSetting((prev) => ({ ...prev, level: prev.level + 1 }));
     }
   };
@@ -49,7 +50,7 @@ export default function OptionPage() {
         <span className="select-none">Level {gameSetting.level}</span>
         <LucideChevronRight
           className={`${
-            gameSetting.level < 5 ? ' cursor-pointer' : 'opacity-0'
+            gameSetting.level < 9 ? ' cursor-pointer' : 'opacity-0'
           }`}
           onClick={handleOnLevelUp}
         />

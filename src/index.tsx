@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import RootLayout from './components/layout/RootLayout';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import StartPage from './pages/StartPage';
 import PlayPage from './pages/PlayPage';
 import OptionPage from './pages/OptionPage';
+import RootLayout from './components/layout/RootLayout';
 const router = createBrowserRouter([
   {
     path: '/',
