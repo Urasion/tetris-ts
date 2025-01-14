@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { BoardType, Position, Tetromino } from '../constant/types';
 import { initPosition, tetrominos } from '../constant/tetris';
-import { useAtom } from 'jotai';
-import { boardAtom, tetrominoAtom } from '../store/atom';
+import { useAtom, useSetAtom } from 'jotai';
+import { boardAtom, gameSettingAtom, tetrominoAtom } from '../store/atom';
 import { produce } from 'immer';
 
 export default function useTetromino() {
   const [tetromino, setTetromino] = useAtom(tetrominoAtom);
   const [board, setBoard] = useAtom(boardAtom);
-
+  const setGameSetting = useSetAtom(gameSettingAtom);
   const generateTetromino = () => {
     const randomTetromino = Math.floor(Math.random() * 7);
     setTetromino((prev) => ({
@@ -207,6 +207,11 @@ export default function useTetromino() {
     index.map(() => {
       board.unshift(Array(board[0].length).fill(0));
     });
+    setGameSetting((prev) => ({
+      ...prev,
+      score: prev.score + index.length * 300,
+      cleanlines: prev.cleanlines + index.length,
+    }));
   };
   function checkGameOver(board: BoardType) {
     const isGameOver = board[4].some((row) => {

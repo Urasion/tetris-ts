@@ -48,16 +48,13 @@ export default function Board({ gameSetting }: { gameSetting: GameSetting }) {
   }, [tetromino, gameSetting.state]);
   return (
     <div
-      className="h-5/6 flex flex-col p-4 bg-[#9EAD86] border-black border-4 space-y-1"
+      className="h-full flex flex-col bg-[#9EAD86]"
       style={{ aspectRatio: 1 / 2 }}
     >
       {board.map(
         (col, colIndex) =>
           colIndex > 3 && (
-            <div
-              className="flex w-full space-x-1 "
-              style={{ aspectRatio: 11 / 1 }}
-            >
+            <div className="flex w-full" style={{ aspectRatio: 11 / 1 }}>
               {col.map((row, rowIndex) => (
                 <TetrisNode
                   isDropTeromino={

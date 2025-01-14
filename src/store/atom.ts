@@ -12,6 +12,7 @@ export const gameSettingAtom = atom<GameSetting>({
   time: 0,
   score: 0,
   state: 'ready',
+  level: 1,
   cleanlines: 0,
 });
 export const boardAtom = atom<BoardType>(initTetrisBoard);
@@ -21,3 +22,4 @@ export const tetrominoAtom = atom<TetromioState>({
   landPostion: initPosition,
   nextShape: tetrominos[0],
 });
+export const timerAtom = atom<NodeJS.Timer>();

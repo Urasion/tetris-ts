@@ -16,9 +16,9 @@ export default function TetrisNode({
   const gameSetting = useAtomValue(gameSettingAtom);
   return (
     <div
-      className={`h-full border p-0.5 ${
+      className={`h-full border p-1 ${
         gameSetting.state === 'gameOver'
-          ? 'bg-gray-600'
+          ? 'border-gray-600 border-4'
           : isTeromino
           ? isTerominoNodeEmpty
             ? 'border-black border-4'
@@ -36,7 +36,7 @@ export default function TetrisNode({
       }}
     >
       <div
-        className={`h-full  ${
+        className={`h-full   ${
           gameSetting.state === 'gameOver'
             ? 'bg-gray-600'
             : isTeromino

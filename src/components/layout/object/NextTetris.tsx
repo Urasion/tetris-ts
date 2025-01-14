@@ -4,12 +4,12 @@ import TetrisNode from './TetrisNode';
 export default function NextTetris() {
   const { tetromino } = useTetromino();
   return (
-    <div className="w-full max-w-[200px] flex flex-col justify-end items-end ">
+    <div className="w-full max-w-[200px] flex flex-col justify-end items-end space-y-4">
       <span className="w-full grow font-bold text-2xl ">Next</span>
-      <ul className="w-full max-w-[150px] h-full max-h-[150px] space-y-1">
+      <ul className="w-full max-w-[150px] h-full max-h-[150px]">
         {tetromino.nextShape.map((col, colIndex) => (
           <ul
-            className="flex w-full space-x-1"
+            className="flex w-full"
             style={{ aspectRatio: 4 / 1 }}
             key={colIndex}
           >

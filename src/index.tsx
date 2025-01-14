@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import StartPage from './pages/StartPage';
 import PlayPage from './pages/PlayPage';
+import OptionPage from './pages/OptionPage';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
           {
             path: 'play',
             element: <PlayPage />,
+          },
+          {
+            path: 'option',
+            element: <OptionPage />,
           },
         ],
       },

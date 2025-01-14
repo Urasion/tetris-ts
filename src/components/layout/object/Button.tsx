@@ -6,7 +6,7 @@ export default function Button({
   onClick,
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button className={`size-36 rounded-full ${className}`} onClick={onClick}>
+    <button className={`size-32 rounded-full ${className}`} onClick={onClick}>
       {children}
     </button>
   );

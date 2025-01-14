@@ -23,5 +23,6 @@ export type GameSetting = {
   time: number;
   score: number;
   cleanlines: number;
+  level: number;
   state: 'ready' | 'stop' | 'gameOver' | 'play';
 };
