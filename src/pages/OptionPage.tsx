@@ -21,7 +21,6 @@ export default function OptionPage() {
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    console.log('asdasd');
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
